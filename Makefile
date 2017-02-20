@@ -1,6 +1,7 @@
 VERSION := $(shell sh -c 'git describe --always --tags')
 BRANCH := $(shell sh -c 'git rev-parse --abbrev-ref HEAD')
 COMMIT := $(shell sh -c 'git rev-parse --short HEAD')
+GOOS ?= linux
 ifdef GOBIN
 PATH := $(GOBIN):$(PATH)
 else
@@ -24,7 +25,7 @@ build-windows:
 		./cmd/telegraf/telegraf.go
 
 build-for-docker:
-	CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o telegraf -ldflags \
+	CGO_ENABLED=0 GOOS=$(GOOS) go build -installsuffix cgo -o telegraf -ldflags \
 		"-s -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.branch=$(BRANCH)" \
 		./cmd/telegraf/telegraf.go
 
